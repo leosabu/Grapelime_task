@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TODO</title>
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <script src="{% static 'script.js' %}"></script>
+</head>
+<body>
+<div class="container body">
+    <div class="row">
+        <h2 align="center">WHAT DO YOU WANT TO DO TODAY?</h2>
+        <div class="col-lg-4 col-lg-offset-4"></div>
+        <div class="col-lg-4 col-lg-offset-4 ">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card content" style="margin-top:20px">
+                        <div class="card-body">
+                            <form action="{% url 'add' %}" method="POST">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        {{ form.text }}
+                                        <span class="input-group-btn">
+								            <button type="submit" class="btn btn-primary"
+                                                    style="border-radius:1px;">ADD</button>
+							            </span>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="row butn">
+                                <div class="col-lg-12">
+                                    <div class="btn-toolbar">
+                                        <div class="btn-group">
+                                            <a href="{% url 'deletecomplete' %}">
+                                                <button type="button" class="btn btn-danger">
+                                                    <i class="glyphicon glyphicon-trash"></i> DELETE COMPLETED
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <table class="list-group t20 css-serial" id="tblLocations">
+                                <tr>
+                                    <th></th>
+                                </tr>
+                                {% for todo in todo_list %}
+                                <tr>
+                                    {% if todo.complete %}
+                                    <td class="list-group-item todo-completed">. {{ todo.text }}</td>
+                                    {% else %}
+                                    <td class="list-group-item"><a href="{% url 'complete' todo.id %}">
+                                        . {{ todo.text }}</a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-lg-offset-4"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+<script>
+$(function () {
+    $("#tblLocations").sortable({
+        items: 'tr:not(tr:first-child)',
+        cursor: 'pointer',
+        axis: 'y',
+        dropOnEmpty: false,
+        start: function (e, ui) {
+            ui.item.addClass("selected");
+        },
+        stop: function (e, ui) {
+            ui.item.removeClass("selected");
+            $(this).find("tr").each(function (index) {
+                if (index > 0) {
+                    $(this).find("td").eq(2).html(index);
+                }
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>
